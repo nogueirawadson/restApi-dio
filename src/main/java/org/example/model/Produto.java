@@ -1,21 +1,42 @@
 package org.example.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Produto {
+@Entity(name = "produto") //Representa uma entidade
+public class Produto implements Serializable {
 
-    private String produtoId;
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    //
     private String nome;
     private String descricao;
     private String codigo;
 
-
-    public String getProdutoId() {
-        return produtoId;
+    public Produto(){
+        super();
     }
 
-    public void setProdutoId(String produtoId) {
-        this.produtoId = produtoId;
+    public Produto(Integer id, String nome, String descricao, String codigo) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.codigo = codigo;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -34,7 +55,7 @@ public class Produto {
         this.descricao = descricao;
     }
 
-    public String  getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
@@ -47,11 +68,11 @@ public class Produto {
         if (this == o) return true;
         if (!(o instanceof Produto)) return false;
         Produto produto = (Produto) o;
-        return Objects.equals(produtoId, produto.produtoId) && Objects.equals(nome, produto.nome) && Objects.equals(descricao, produto.descricao) && Objects.equals(codigo, produto.codigo);
+        return Objects.equals(getId(), produto.id) && Objects.equals(nome, produto.nome) && Objects.equals(descricao, produto.descricao) && Objects.equals(codigo, produto.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(produtoId, nome, descricao, codigo);
+        return Objects.hash(id, nome, descricao, codigo);
     }
 }

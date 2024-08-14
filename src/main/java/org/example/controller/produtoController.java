@@ -1,43 +1,60 @@
 package org.example.controller;
 
 import org.example.model.Produto;
-import org.example.model.RepositorioProduto;
+import org.example.service.produtoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
+@RequestMapping(value = "/produtos")
 public class produtoController {
 
    @Autowired
-   private RepositorioProduto produtos;
+   private produtoService service;
 
-    @RequestMapping(value = "/produtos", method = RequestMethod.GET, produces = "application/json")
-    public RepositorioProduto getProdutos(){
-        return produtos;
+   @GetMapping(value = "/{id}") // AChar produto pelo id
+   public ResponseEntity<Produto> findById(@PathVariable Integer id) {
+       Produto produto = service.findById(id);
+       return ResponseEntity.ok().body(produto);
+   }
+
+    @GetMapping(value = "/produtos") // Listar todos os produtos
+    public ResponseEntity<List<Produto>> listAll() {
+       List<Produto> list = service.findAll();
+        return ResponseEntity.ok().body(list);
     }
 
 
-    @PostMapping("/produtos")
-    public Produto addProduto(@RequestBody Produto produto){
-        produtos.save(produto);
-        System.out.println(produtos);
-        return produto;
+    @PostMapping // Quando recebemos uma requisição não precisamos de valor
+    public ResponseEntity<Produto> create(@RequestBody Produto produto){
+        produto = service.create(produto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(produto.getId())
+                .toUri();
+        return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping("/produtos{nome}")
-    public Produto updateProduto(@PathVariable("nome") Produto produto){
-        produtos.upadate(produto);
-        return produto;
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Produto> upadate(@PathVariable Integer id, @RequestBody Produto produto){
+       Produto newProduto = service.update(id, produto);
+       return ResponseEntity.ok().body(newProduto);
+
     }
 
-    @GetMapping("/produtos")
-    public Produto getProduto(@PathVariable("nome") String nome ) {
-        return produtos.findBynome(nome);
-    }
 
-    @DeleteMapping(path = {"/produtos/{id}"})
-    public void deleteProduto(@PathVariable("nome") String nome){
-        produtos.delete(getProdutos().findBynome(nome));
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id){
+       service.delete(id);
+       return ResponseEntity.noContent().build();
     }
 
 }
