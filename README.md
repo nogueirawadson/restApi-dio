@@ -4,7 +4,7 @@
 <span>Nesse desafio foram ultilizados: </span>
 <ol> 
   <li> Spring Framework Java </li>  
-  <li> Spring Boot 2 </li>
+  <li> Spring Boot  </li>
   <li> Gerenciador de depenências Apache Maven </li>
   <li> JAVA 11 </li>
   <li> H2 DataBase </li>
